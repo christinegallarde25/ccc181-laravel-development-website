@@ -17,6 +17,9 @@
             <div class="navbar-nav d-flex flex-row flex-wrap gap-lg-2">
                 <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">Dashboard</a>
                 <a class="nav-link {{ request()->routeIs('bookings.*') ? 'active' : '' }}" href="{{ route('bookings.index') }}">Bookings</a>
+                @if (auth()->user()?->isAdmin())
+                    <a class="nav-link {{ request()->routeIs('users.*') ? 'active' : '' }}" href="{{ route('users.index') }}">Manage Users</a>
+                @endif
             </div>
             <div class="d-flex align-items-center gap-3 ms-lg-auto">
                 <span>Hi, {{ \Illuminate\Support\Str::ucfirst(\Illuminate\Support\Str::lower((string) \Illuminate\Support\Str::of(auth()->user()->name)->squish()->before(' '))) }}</span>

@@ -9,6 +9,11 @@
         <input class="form-control @error('organizer') is-invalid @enderror" type="text" name="organizer" id="organizer" value="{{ old('organizer', $booking->organizer) }}" maxlength="255" required>
         @error('organizer') <div class="invalid-feedback">{{ $message }}</div> @enderror
     </div>
+    <div class="col-12">
+        <label for="description" class="form-label">Description</label>
+        <textarea class="form-control @error('description') is-invalid @enderror" name="description" id="description" rows="3">{{ old('description', $booking->description) }}</textarea>
+        @error('description') <div class="invalid-feedback">{{ $message }}</div> @enderror
+    </div>
     <div class="col-md-6">
         <label for="event_date" class="form-label">Event date</label>
         <input class="form-control @error('event_date') is-invalid @enderror" type="date" name="event_date" id="event_date" value="{{ old('event_date', $booking->event_date?->format('Y-m-d')) }}" required>
@@ -20,19 +25,34 @@
         @error('expected_attendees') <div class="invalid-feedback">{{ $message }}</div> @enderror
     </div>
     <div class="col-md-6">
-        <label for="status" class="form-label">Status</label>
-        <select class="form-select @error('status') is-invalid @enderror" name="status" id="status" required>
-            @foreach (['upcoming' => 'Upcoming', 'ongoing' => 'Ongoing', 'completed' => 'Completed'] as $value => $label)
-                <option value="{{ $value }}" @selected(old('status', $booking->status ?? 'upcoming') === $value)>{{ $label }}</option>
-            @endforeach
-        </select>
-        @error('status') <div class="invalid-feedback">{{ $message }}</div> @enderror
+        <label for="image" class="form-label">Image</label>
+        @if ($booking->image_path)
+            <div class="mb-2">
+                <img src="{{ Storage::url($booking->image_path) }}" alt="Current image" class="img-thumbnail" style="max-height:120px;">
+            </div>
+        @endif
+        <input class="form-control @error('image') is-invalid @enderror{{ request()->query('img_error') ? ' is-invalid' : '' }}" type="file" name="image" id="image" accept="image/jpeg,image/png,image/webp">
+        @error('image') <div class="invalid-feedback">{{ $message }}</div> @enderror
+        @if (request()->query('img_error') && !$errors->has('image'))
+            <div class="invalid-feedback d-block">The uploaded image exceeds the 10 MB limit. Please choose a smaller file.</div>
+        @endif
     </div>
-    <div class="col-md-6">
-        <label for="current_count" class="form-label">Current attendee count</label>
-        <input class="form-control @error('current_count') is-invalid @enderror" type="number" name="current_count" id="current_count" value="{{ old('current_count', $booking->current_count ?? 0) }}" min="0" required>
-        @error('current_count') <div class="invalid-feedback">{{ $message }}</div> @enderror
-    </div>
+    @if (auth()->user()?->isAdmin())
+        <div class="col-md-6">
+            <label for="status" class="form-label">Status</label>
+            <select class="form-select @error('status') is-invalid @enderror" name="status" id="status" required>
+                @foreach (['upcoming' => 'Upcoming', 'ongoing' => 'Ongoing', 'completed' => 'Completed'] as $value => $label)
+                    <option value="{{ $value }}" @selected(old('status', $booking->status ?? 'upcoming') === $value)>{{ $label }}</option>
+                @endforeach
+            </select>
+            @error('status') <div class="invalid-feedback">{{ $message }}</div> @enderror
+        </div>
+        <div class="col-md-6">
+            <label for="current_count" class="form-label">Current attendee count</label>
+            <input class="form-control @error('current_count') is-invalid @enderror" type="number" name="current_count" id="current_count" value="{{ old('current_count', $booking->current_count ?? 0) }}" min="0" required>
+            @error('current_count') <div class="invalid-feedback">{{ $message }}</div> @enderror
+        </div>
+    @endif
 </div>
 
 <div class="d-flex gap-2 mt-4">

@@ -9,7 +9,7 @@
     </div>
     <div class="card shadow-sm">
         <div class="card-body p-4">
-            <form method="POST" action="{{ route('bookings.update', $booking) }}">
+            <form method="POST" action="{{ route('bookings.update', $booking) }}" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 @include('bookings._form', ['submitLabel' => 'Save changes'])

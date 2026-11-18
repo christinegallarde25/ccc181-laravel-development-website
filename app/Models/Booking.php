@@ -9,11 +9,18 @@ class Booking extends Model
     protected $fillable = [
         'event_name',
         'organizer',
+        'description',
+        'image_path',
         'event_date',
         'expected_attendees',
         'status',
         'current_count',
     ];
+
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 
     protected function casts(): array
     {
